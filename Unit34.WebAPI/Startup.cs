@@ -11,22 +11,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unit34.WebAPI.Configuration;
+using Unit34.WebAPI.Controllers;
 
 namespace Unit34.WebAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        //public Startup(IConfiguration configuration)
+        //{
+        //    Configuration = configuration;
+        //}
+
+        public IConfiguration Configuration
+        { get; } = new ConfigurationBuilder()
+            //.AddJsonFile("appsettings.json")
+            .AddJsonFile("HomeOptions.json")
+            .Build();
+    // This method gets called by the runtime. Use this method to add services to the container.
+    public void ConfigureServices(IServiceCollection services)
         {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-
+            services.Configure<HomeOptions>(Configuration);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
