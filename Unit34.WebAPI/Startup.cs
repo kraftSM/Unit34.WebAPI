@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Unit34.WebAPI.Configuration;
 using Unit34.WebAPI.Controllers;
@@ -23,6 +25,9 @@ namespace Unit34.WebAPI
         //    Configuration = configuration;
         //}
 
+        /// <summary>
+        /// Загрузка конфигурации из файла Json
+        /// </summary>
         public IConfiguration Configuration
         { get; } = new ConfigurationBuilder()
             //.AddJsonFile("appsettings.json")
@@ -32,11 +37,25 @@ namespace Unit34.WebAPI
     public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<HomeOptions>(Configuration);
+            // Set param by 1
+            //services.Configure<HomeOptions>(opt => opt.Area = 127);
+            //services.Configure<HomeOptions>(opt =>
+            //{
+            //    opt.Area = 120;
+            //});
+            // Загружаем только адрес (вложенный Json-объект) 
+            //services.Configure<Address>(Configuration.GetSection("Address"));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Unit34.WebAPI", Version = "v1" });
             });
+
+            // Подключаем автомаппинг
+            var assembly = Assembly.GetAssembly(typeof(MappingProfile));
+            services.AddAutoMapper(assembly);
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
